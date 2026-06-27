@@ -8,10 +8,12 @@ from sklearn.metrics import mean_squared_error, f1_score, roc_auc_score
 import copy
 import os
 import importlib
-import mlflow  
+import mlflow 
 
-mlflow.set_tracking_uri("http://localhost:5050")  
+mlflow.set_tracking_uri("http://mlflow.mlops.svc.cluster.local:5050")  
 mlflow.set_experiment("Aerospace_Maintenance")
+
+mlflow.pytorch.autolog()
 
 # Standard trick to import scripts starting with numbers
 seq_module = importlib.import_module("04_sequences")
@@ -118,7 +120,7 @@ with mlflow.start_run(run_name="PyTorch_MultiTask_Training"):
             
         f1 = f1_score(all_alert_trues, alert_preds_binary, zero_division=0)
         
-        # Logging f local history
+        # Logging local history
         history['train_loss'].append(train_loss_epoch)
         history['val_loss'].append(val_loss_epoch)
         history['val_rmse'].append(rmse)
@@ -170,7 +172,8 @@ with mlflow.start_run(run_name="PyTorch_MultiTask_Training"):
     dummy_input = torch.randn(64, 30, 14).to(device)
     mlflow.log_artifact('learning_curves.png')
     
-    #mlflow.pytorch.log_model(model, artifact_path="model", registered_model_name="Aerospace_MultiTask_Model")
+    mlflow.pytorch.log_model(model, artifact_path="model", registered_model_name="Aerospace_MultiTask_Model")
+    
     mlflow.log_artifact('best_multitask_model.pth', artifact_path="model")
     torch.onnx.export(
         model, 
