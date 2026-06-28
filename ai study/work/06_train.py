@@ -10,8 +10,11 @@ import os
 import importlib
 import mlflow 
 
-mlflow.set_tracking_uri("http://mlflow.mlops.svc.cluster.local:5050")  
-mlflow.set_experiment("Aerospace_Maintenance")
+# mlflow.set_tracking_uri("http://mlflow.mlops.svc.cluster.local:5050")  
+# mlflow.set_experiment("Aerospace_Maintenance")
+
+mlflow.set_tracking_uri("http://mlflow-service.argocd.svc.cluster.local:5000")
+mlflow.set_experiment("aerospace-predictive-maintenance"
 
 mlflow.pytorch.autolog()
 
